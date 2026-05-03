@@ -8,6 +8,9 @@ import {
   verifications,
 } from "@/db/schema/users";
 
+const PRODUCTION_ORIGIN = "https://suryalabs-apps.vercel.app";
+const LOCAL_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"];
+
 function normalizeOrigin(origin?: string) {
   if (!origin) return null;
 
@@ -21,19 +24,55 @@ function normalizeOrigin(origin?: string) {
   }
 }
 
+function getHost(origin: string) {
+  try {
+    return new URL(origin).host;
+  } catch {
+    return null;
+  }
+}
+
 function getTrustedOrigins() {
   return [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    ...LOCAL_ORIGINS,
+    PRODUCTION_ORIGIN,
     normalizeOrigin(process.env.BETTER_AUTH_URL),
     normalizeOrigin(process.env.NEXT_PUBLIC_BETTER_AUTH_URL),
     normalizeOrigin(process.env.NEXT_PUBLIC_APP_URL),
+    normalizeOrigin(process.env.VERCEL_PROJECT_PRODUCTION_URL),
     normalizeOrigin(process.env.VERCEL_URL),
     normalizeOrigin(process.env.VERCEL_BRANCH_URL),
   ].filter((origin): origin is string => Boolean(origin));
 }
 
+function getAllowedHosts() {
+  return Array.from(
+    new Set(
+      getTrustedOrigins()
+        .map((origin) => getHost(origin))
+        .filter((host): host is string => Boolean(host)),
+    ),
+  );
+}
+
+function getAuthFallbackURL() {
+  return (
+    normalizeOrigin(process.env.NEXT_PUBLIC_APP_URL) ??
+    normalizeOrigin(process.env.NEXT_PUBLIC_BETTER_AUTH_URL) ??
+    normalizeOrigin(process.env.VERCEL_PROJECT_PRODUCTION_URL) ??
+    normalizeOrigin(process.env.VERCEL_URL) ??
+    normalizeOrigin(process.env.BETTER_AUTH_URL) ??
+    PRODUCTION_ORIGIN
+  );
+}
+
 export const auth = betterAuth({
+  baseURL: {
+    allowedHosts: getAllowedHosts(),
+    fallback: getAuthFallbackURL(),
+    protocol: "auto",
+  },
+
   database: drizzleAdapter(db, {
     provider: "pg",
     // Better Auth uses singular model names ("user"); plural Drizzle keys require this.
