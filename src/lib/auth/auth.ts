@@ -1,12 +1,37 @@
 import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import db from "@/db";
 import {
   accounts,
-  usersTable,
   sessions,
+  usersTable,
   verifications,
 } from "@/db/schema/users";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
+
+function normalizeOrigin(origin?: string) {
+  if (!origin) return null;
+
+  const value = origin.trim().replace(/\/$/, "");
+  if (!value) return null;
+
+  try {
+    return new URL(value.includes("://") ? value : `https://${value}`).origin;
+  } catch {
+    return null;
+  }
+}
+
+function getTrustedOrigins() {
+  return [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    normalizeOrigin(process.env.BETTER_AUTH_URL),
+    normalizeOrigin(process.env.NEXT_PUBLIC_BETTER_AUTH_URL),
+    normalizeOrigin(process.env.NEXT_PUBLIC_APP_URL),
+    normalizeOrigin(process.env.VERCEL_URL),
+    normalizeOrigin(process.env.VERCEL_BRANCH_URL),
+  ].filter((origin): origin is string => Boolean(origin));
+}
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -56,5 +81,5 @@ export const auth = betterAuth({
     },
   },
 
-  trustedOrigins: [process.env.BETTER_AUTH_URL ?? "http://localhost:3000"],
+  trustedOrigins: getTrustedOrigins(),
 });
