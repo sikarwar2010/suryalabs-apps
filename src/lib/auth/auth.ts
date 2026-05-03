@@ -7,11 +7,12 @@ import {
   verifications,
 } from "@/db/schema/users";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import type { authClient } from "./client";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
+    // Better Auth uses singular model names ("user"); plural Drizzle keys require this.
+    usePlural: true,
     schema: {
       users: usersTable,
       sessions: sessions,
@@ -23,6 +24,9 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
+    // Default Better Auth minimum is 8; keep UI/forms at 6+.
+    minPasswordLength: 6,
+    maxPasswordLength: 128,
   },
 
   session: {
@@ -45,9 +49,12 @@ export const auth = betterAuth({
     },
   },
 
+  // Drizzle schema uses uuid columns; Better Auth defaults to non-UUID string ids.
+  advanced: {
+    database: {
+      generateId: "uuid",
+    },
+  },
+
   trustedOrigins: [process.env.BETTER_AUTH_URL ?? "http://localhost:3000"],
 });
-
-export type User = typeof authClient.$Infer.Session.user;
-
-export type Session = typeof authClient.$Infer.Session;

@@ -1,10 +1,12 @@
-import { ModeToggle } from "@/components/common/ModeToggle";
 
-export default function Home() {
-  return (
-    <div className="">
-      <h1>Hello World</h1>
-      <ModeToggle />
-    </div>
-  );
+import { getServerSession } from "@/lib/auth/rbac";
+import { redirect } from "next/navigation";
+
+export default async function Home() {
+  const session = await getServerSession();
+  if (session) {
+    redirect("/dashboard");
+  } else {
+    redirect("/sign-in");
+  }
 }
