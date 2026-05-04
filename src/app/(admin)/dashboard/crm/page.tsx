@@ -1,5 +1,9 @@
+import NewLeadPage from "@/components/crm/newlead";
+
 export default function CRMPage() {
-  return <div>
-    
-  </div>;
+	return (
+		<div>
+			<NewLeadPage />
+		</div>
+	);
 }
