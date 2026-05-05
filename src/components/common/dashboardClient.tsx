@@ -90,7 +90,7 @@ function KPICard({
   color: string;
 }) {
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-gray-100 bg-white dark:bg-orange-100 p-5 shadow-md">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-gray-500">{title}</p>
@@ -189,7 +189,7 @@ export function DashboardClient({ stats }: { stats: DashboardStats }) {
         />
       </div>
 
-      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+      <div className="rounded-xl border border-gray-100 bg-white dark:bg-orange-100 p-5 shadow-md">
         <h2 className="mb-4 text-base font-medium text-gray-800">
           Monthly Revenue
         </h2>
@@ -227,7 +227,7 @@ export function DashboardClient({ stats }: { stats: DashboardStats }) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-gray-100 bg-white dark:bg-orange-100 p-5 shadow-md">
           <h2 className="mb-4 text-base font-medium text-gray-800">
             Orders by Status
           </h2>
@@ -260,7 +260,7 @@ export function DashboardClient({ stats }: { stats: DashboardStats }) {
           )}
         </div>
 
-        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-gray-100 bg-white dark:bg-orange-100 p-5 shadow-md">
           <h2 className="mb-4 text-base font-medium text-gray-800">
             Subsidy Pipeline
           </h2>
