@@ -11,6 +11,7 @@ import {
 	uuid,
 	varchar,
 } from "drizzle-orm/pg-core";
+import type { QuotationLineItem } from "@/schema/sales.schema";
 import {
 	customers,
 	employees,
@@ -115,7 +116,7 @@ export const quotations = pgTable("quotations", {
 	subsidyAmount: numeric("subsidy_amount", { precision: 14, scale: 2 }).default("0"),
 	netAmount: numeric("net_amount", { precision: 14, scale: 2 }).notNull(),
 	// Line items stored as JSONB
-	lineItems: jsonb("line_items").notNull(),
+	lineItems: jsonb("line_items").notNull().$type<QuotationLineItem[]>(),
 	// Meta
 	validUntil: date("valid_until"),
 	terms: text("terms"),
