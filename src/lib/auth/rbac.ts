@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/auth";
 
-export type Role = "admin" | "sales" | "manager" | "accountant";
+export type Role = "admin" | "sales" | "manager" | "accountant" | "installations";
 
 export const PERMISSIONS = {
   // CRM
