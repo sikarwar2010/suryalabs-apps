@@ -2,7 +2,7 @@ import { format } from "date-fns";
 
 // ─── Code generators ─────────────────────────────────────────────────────────
 
-export function generateCode(prefix: string, length = 6): string {
+export function generateCode(prefix: string, _length = 6): string {
   const timestamp = Date.now().toString().slice(-6);
   return `${prefix}-${timestamp}`;
 }
